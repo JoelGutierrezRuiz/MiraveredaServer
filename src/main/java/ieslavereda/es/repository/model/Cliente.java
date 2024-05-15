@@ -6,34 +6,35 @@ import java.sql.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @ToString
-public class Cliente {
-
-    private int id;
-    private String nombre;
-    private String apellidos;
-    private String contrasenya;
+public class Cliente extends Usuario{
     private Date changedTS;
     private int ntarjeta;
     private Date fechaNac;
-    private String email;
     private int CP;
     private String Domicilio;
+
+    public Cliente(int id, String nombre, String apellidos, String contrasenya, String email, Date changedTS, Date changedTS1, int ntarjeta, Date fechaNac, int CP, String domicilio) {
+        super(id, nombre, apellidos, contrasenya, email, changedTS);
+        this.changedTS = changedTS1;
+        this.ntarjeta = ntarjeta;
+        this.fechaNac = fechaNac;
+        this.CP = CP;
+        Domicilio = domicilio;
+    }
 
     @Override
     public boolean equals(Object object){
         if(object==null || !(object instanceof Cliente))
             return false;
         Cliente cliente = (Cliente) object;
-        return id == cliente.getId();
+        return getId() == cliente.getId();
      }
 
      @Override
     public int hashCode(){
-        return id;
+        return getId();
      }
 
 }
