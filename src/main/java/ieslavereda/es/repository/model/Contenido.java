@@ -7,7 +7,6 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @ToString
 public abstract class Contenido {
     private int id;

@@ -23,8 +23,8 @@ public class MyDataSource {
     public static DataSource getMyOracleDataSource() throws SQLException {
         OracleDataSource dataSource = new OracleDataSource();
         dataSource.setURL("jdbc:oracle:thin:@172.28.201.239:1521:xe");
-        dataSource.setUser("C##XAVIER");
-        dataSource.setPassword("11111111");
+        dataSource.setUser("C##1DAWLIS");
+        dataSource.setPassword("1234");
         return dataSource;
     }
 
