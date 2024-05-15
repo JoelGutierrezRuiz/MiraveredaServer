@@ -13,8 +13,8 @@ public class Pelicula extends Contenido{
    private Date disponibleHasta;
    private Date changedTS_peli;
 
-    public Pelicula(int id, String nombreDire, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo, Date changedTS, Date changedTS_peli, Date disponibleHasta) {
-        super(id, nombreDire, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, changedTS);
+    public Pelicula(int id, String nombreDire, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo, Date changedTS, Date changedTS_peli, Date disponibleHasta,String titulo) {
+        super(id, nombreDire, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, changedTS,titulo);
         this.changedTS_peli = changedTS_peli;
         this.disponibleHasta = disponibleHasta;
     }

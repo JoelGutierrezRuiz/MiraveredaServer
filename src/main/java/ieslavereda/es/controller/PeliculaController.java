@@ -1,6 +1,7 @@
 package ieslavereda.es.controller;
 
 
+import ieslavereda.es.repository.model.Pelicula;
 import ieslavereda.es.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ public class PeliculaController {
     @GetMapping("/pelicula/{nombre}")
     public ResponseEntity<?> getPelicula(@PathVariable("nombre") String nombre){
         try {
-            String titulo = peliculaService.getPelicula(nombre);
-            return new ResponseEntity<>(titulo,HttpStatus.OK);
+            Pelicula pelicula = peliculaService.getPelicula(nombre);
+            return new ResponseEntity<>(pelicula,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -11,8 +11,7 @@ public class ContentScrapping {
     public static void main(String[] args) throws IOException {
 
 
-        String nombre = "el padrino";
-
+        String nombre = "el pa";
         nombre.replace(" ","%");
 
         OkHttpClient client = new OkHttpClient();
@@ -28,8 +27,9 @@ public class ContentScrapping {
 
         JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
 
-        System.out.println(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("original_title"));
+        System.out.println(respuestaString);
 
+        //System.out.println(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("original_title"));
 
     }
 

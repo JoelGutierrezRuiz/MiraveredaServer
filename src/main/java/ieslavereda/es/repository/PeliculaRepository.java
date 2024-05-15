@@ -5,9 +5,11 @@ import com.google.gson.JsonParser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Date;
 
 @Repository
 public class PeliculaRepository {
@@ -15,7 +17,7 @@ public class PeliculaRepository {
 
 
 
-    public String getPelicula(String nombre) throws IOException {
+    public Pelicula getPelicula(String nombre) throws IOException {
 
         try {
             nombre.replace(" ","%");
@@ -33,7 +35,19 @@ public class PeliculaRepository {
 
             JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
 
-           return jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("original_title").toString();
+            Pelicula pelicula = new Pelicula();
+
+            pelicula.setId(1);
+            pelicula.setDuracion(122);
+            pelicula.setFecha(new Date(2024,1,1));
+            pelicula.setGenero("Nose");
+            pelicula.setTipo("Accion");
+            pelicula.setDisponibleHasta(new Date(2024,1,1));
+            pelicula.setNombreDire("Joel");
+            pelicula.setTitulo(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("original_title").toString());
+            pelicula.setId_tarifa(22);
+            pelicula.setValoMedia(23);
+            return pelicula;
 
         }catch (Exception e){
             throw new RuntimeException(e);

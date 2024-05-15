@@ -19,4 +19,5 @@ public abstract class Contenido {
     private int duracion;
     private String tipo;
     private Date changedTS;
+    private String titulo;
 }
