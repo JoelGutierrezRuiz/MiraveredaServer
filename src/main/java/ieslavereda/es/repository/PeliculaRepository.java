@@ -10,6 +10,7 @@ import ieslavereda.es.Api.Conection;
 import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Date;
 import java.text.ParseException;
@@ -23,16 +24,18 @@ public class PeliculaRepository {
 
     private List<Pelicula> peliculas;
 
-    public PeliculaRepository() throws IOException, InterruptedException {
+    private List<Integer> peliculasId;
 
+    public PeliculaRepository() throws IOException {
         peliculas = new ArrayList<>();
+        peliculasId = new ArrayList<>();
+        getPeliculasId();
     }
 
-    public Pelicula getPelicula(String nombre) throws IOException {
 
+    public Pelicula getPelicula(String nombre) throws IOException {
         try {
             nombre.replace(" ","%");
-
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url("https://api.themoviedb.org/3/search/movie?query="+nombre+"&include_adult=false&language=es&page=1")
@@ -63,10 +66,66 @@ public class PeliculaRepository {
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-
-
     }
 
+
+
+    public Pelicula getPeliculaByid(int idPeli) throws IOException, ParseException {
+
+            Conection connection = new Conection("https://api.themoviedb.org/3/movie/"+idPeli+"?language=es");
+            Response response = connection.connect();
+            Pelicula pelicula;
+            if(response.isSuccessful()) {
+
+                String respuestaString = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+                int id = jsonObject.get("id").getAsInt();
+                String nombreDir = "append";
+                String genero = "append";
+                int id_tarifa = 1;
+                String fechaStr = jsonObject.get("release_date").getAsString();
+                SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
+                Date fecha = (Date) formatoFecha.parse(fechaStr);
+                float valoracion = jsonObject.get("vote_average").getAsFloat();
+                String desc = jsonObject.get("overview").getAsString();
+                int duracion = 90;
+                String tipo = "Pelicula";
+                java.util.Date disponible = new java.util.Date(2027, Calendar.MARCH, 1);
+                String titulo = jsonObject.get("title").getAsString();
+                String img = "https://image.tmdb.org/t/p/original"+jsonObject.get("poster_path").getAsString();
+
+                pelicula = new Pelicula(id,nombreDir, genero, id_tarifa, fecha, valoracion, desc, duracion, tipo, disponible, titulo,img);
+                return pelicula;
+            }
+            throw new EOFException("No hemos encontrado pelicula");
+    }
+
+
+    public void getPeliculasId() throws IOException {
+        int totalPaginas = 150;
+        for(int i=0; i<=totalPaginas;i++) {
+            Conection connection = new Conection("https://api.themoviedb.org/3/movie/top_rated?language=es&page=" + i);
+            Response response = connection.connect();
+            if (response.isSuccessful()) {
+                String respuestaString = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+                for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
+                    int id = peli.getAsJsonObject().get("id").getAsInt();
+                    peliculasId.add(id);
+                }
+            }
+        }
+    }
+
+
+
+
+    public List<Pelicula> getPeliculasBd() throws IOException, ParseException {
+        for(int id : peliculasId){
+            peliculas.add(getPeliculaByid(id));
+        }
+        return peliculas;
+    }
 
 
 
