@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class PeliculaService {
@@ -14,6 +15,10 @@ public class PeliculaService {
     private PeliculaRepository peliculaRepository;
     public Pelicula getPelicula(String nombre) throws IOException {
         return  peliculaRepository.getPelicula(nombre);
+    }
+
+    public List<Pelicula> getPeliculas() throws IOException {
+        return  peliculaRepository.getPeliculas();
     }
 
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 public class PeliculaController {
@@ -23,6 +25,16 @@ public class PeliculaController {
         try {
             Pelicula pelicula = peliculaService.getPelicula(nombre);
             return new ResponseEntity<>(pelicula,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/peliculas")
+    public ResponseEntity<?> getPelicula(){
+        try {
+            List<Pelicula> peliculas = peliculaService.getPeliculas();
+            return new ResponseEntity<>(peliculas,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
