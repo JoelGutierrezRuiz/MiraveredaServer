@@ -10,7 +10,7 @@ import java.util.Date;
 @ToString
 public abstract class Contenido {
     private int id;
-    private String nombreDire;
+    private int idDirector;
     private String genero;
     private int id_tarifa;
     private Date fecha;
