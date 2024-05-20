@@ -15,9 +15,8 @@ public class Cliente extends Usuario{
     private int CP;
     private String Domicilio;
 
-    public Cliente(int id, String nombre, String apellidos, String contrasenya, String email, Date changedTS, Date changedTS1, int ntarjeta, Date fechaNac, int CP, String domicilio) {
-        super(id, nombre, apellidos, contrasenya, email, changedTS);
-        this.changedTS = changedTS1;
+    public Cliente(int id, String nombre, String apellidos, String contrasenya, String email, int ntarjeta, Date fechaNac, int CP, String domicilio) {
+        super(id, nombre, apellidos, contrasenya, email);
         this.ntarjeta = ntarjeta;
         this.fechaNac = fechaNac;
         this.CP = CP;

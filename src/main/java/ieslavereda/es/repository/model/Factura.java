@@ -15,5 +15,4 @@ public class Factura {
     private double importe;
     private float IVA;
     private int id_cliente;
-    private Date changedTS;
 }

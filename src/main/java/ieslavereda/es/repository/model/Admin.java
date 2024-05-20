@@ -14,10 +14,9 @@ public class Admin extends Usuario{
     private Date changedTS1;
     private int nivel;
 
-    public Admin(int id, String nombre, String apellidos, String contrasenya, String email, Date changedTS, int nivel, Date changedTS1) {
-        super(id, nombre, apellidos, contrasenya, email, changedTS);
+    public Admin(int id, String nombre, String apellidos, String contrasenya, String email, Date changedTS, int nivel) {
+        super(id, nombre, apellidos, contrasenya, email);
         this.nivel = nivel;
-        this.changedTS1 = changedTS1;
     }
 
 }

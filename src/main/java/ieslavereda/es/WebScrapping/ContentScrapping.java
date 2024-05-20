@@ -6,6 +6,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.google.gson.JsonObject;
+import ieslavereda.es.repository.model.Actor;
 import ieslavereda.es.repository.model.Contenido;
 import ieslavereda.es.repository.model.Pelicula;
 
@@ -19,47 +20,27 @@ import java.util.List;
 public class ContentScrapping {
     public static void main(String[] args) throws IOException {
 
+        try {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("https://api.themoviedb.org/3/movie/"+36756+"?append_to_response=credits,images&language=es/ES")
+                    .get()
+                    .addHeader("accept", "application/json")
+                    .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjZiNjg4MDlkZGMyYTAyOGZmNzZiODY3ZWE5ZjI5MCIsInN1YiI6IjY2NDRjYzAwOGU2NDk3ZWY2ZTViY2JjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MstHGYLhi2JqMKg98iEOknnVws5W12bYu5jRRSu7WN4")
+                    .build();
+            Response response = client.newCall(request).execute();
 
-        List<Pelicula> peliculas = new ArrayList<>();
+            String respuestaString = response.body().string();
 
-        OkHttpClient client = new OkHttpClient();
+            JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
 
-        Request request = new Request.Builder()
-                .url("https://api.themoviedb.org/3/movie/top_rated?language=es&page=1")
-                .get()
-                .addHeader("accept", "application/json")
-                .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjZiNjg4MDlkZGMyYTAyOGZmNzZiODY3ZWE5ZjI5MCIsInN1YiI6IjY2NDRjYzAwOGU2NDk3ZWY2ZTViY2JjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MstHGYLhi2JqMKg98iEOknnVws5W12bYu5jRRSu7WN4")
-                .build();
-        Response response = client.newCall(request).execute();
-        String respuestaString = response.body().string();
-
-
-
-        JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+            System.out.println(jsonObject.get("credits").getAsJsonObject().get("cast"));
 
 
-        for( JsonElement peli : jsonObject.get("results").getAsJsonArray()){
 
-            int id = 1;
-            String nombreDir = "append";
-            String genero = "append";
-            int id_tarifa =1;
-            Date fecha  = new Date(2024,Calendar.MARCH,1);
-            int valoracion =1;
-            String desc = peli.getAsJsonObject().get("overview").toString();
-            int duracion = 90;
-            String tipo = "Pelicula";
-            Date changeTs  = new Date(2025,Calendar.MARCH,1);
-            Date changeTs2  = new Date(2026, Calendar.MARCH,1);
-            Date disponible  = new Date(2027,Calendar.MARCH,1);
-            String titulo = peli.getAsJsonObject().get("title").toString();
-
-            Pelicula pelicula = new Pelicula(id,nombreDir,genero,id_tarifa,fecha,valoracion,desc,duracion,tipo,changeTs,changeTs2,disponible,titulo);
-
-            peliculas.add(pelicula);
-
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-
 
 
 

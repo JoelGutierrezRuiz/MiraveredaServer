@@ -18,7 +18,13 @@ public class PeliculaService {
     }
 
     public List<Pelicula> getPeliculas() throws IOException {
-        return  peliculaRepository.getPeliculas();
+
+        try {
+            return  peliculaRepository.getPeliculas();
+
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 }

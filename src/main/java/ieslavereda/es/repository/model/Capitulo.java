@@ -14,13 +14,11 @@ import java.sql.Date;
 
 public class Capitulo extends Contenido{
     private String nombre;
-    private Date changedTSCapitulo;
-    private boolean disponibilidad;
+    private Integer disponibilidad;
 
-    public Capitulo(int id, String nombreDire, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo, Date changedTS, String nombre, Date changedTSCapi, boolean disponibilidad,String titulo) {
-        super(id, nombreDire, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, changedTS,titulo);
+    public Capitulo(int id, String nombreDire, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo, String nombre, Integer disponibilidad,String titulo,String img) {
+        super(id, nombreDire, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo,titulo,img);
         this.nombre = nombre;
-        this.changedTSCapitulo = changedTSCapi;
         this.disponibilidad = disponibilidad;
     }
 }

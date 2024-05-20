@@ -25,9 +25,9 @@ public class ClienteRepository {
 
     public ClienteRepository(){
         clientes = new ArrayList<>();
-        clientes.add(new Cliente(1111,"Joel","Lopez","198024","@gmail.com",new Date(2024,1,1),new Date(2024,1,1),111111,new Date(2024,1,1),46160,"Mi casa num 5"));
-        clientes.add(new Cliente(1111,"Ivan","Lopez","198024","@gmail.com",new Date(2024,1,1),new Date(2024,1,1),111111,new Date(2024,1,1),46160,"Mi casa num 5"));
-        clientes.add(new Cliente(1111,"Aray","Lopez","198024","@gmail.com",new Date(2024,1,1),new Date(2024,1,1),111111,new Date(2024,1,1),46160,"Mi casa num 5"));
+        clientes.add(new Cliente(1111,"Joel","Lopez","198024","@gmail.com",111111,new Date(2024,1,1),46160,"Mi casa num 5"));
+        clientes.add(new Cliente(1111,"Ivan","Lopez","198024","@gmail.com",111111,new Date(2024,1,1),46160,"Mi casa num 5"));
+        clientes.add(new Cliente(1111,"Aray","Lopez","198024","@gmail.com",111111,new Date(2024,1,1),46160,"Mi casa num 5"));
 
 
     }
@@ -39,7 +39,7 @@ public class ClienteRepository {
 
 
     public Cliente getCliente(String nombre){
-        return new Cliente(1111,nombre,"Lopez","198024","@gmail.com",new Date(2024,1,1),new Date(2024,1,1),111111,new Date(2024,1,1),46160,"Mi casa num 5");
+        return new Cliente(1111,nombre,"Lopez","198024","@gmail.com",111111,new Date(2024,1,1),46160,"Mi casa num 5");
     }
 
 

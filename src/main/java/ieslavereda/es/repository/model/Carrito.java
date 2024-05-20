@@ -12,5 +12,4 @@ import java.sql.Date;
 public class Carrito {
    private int id_cliente;
    private int lineaFactura;
-   private Date changedTS;
 }

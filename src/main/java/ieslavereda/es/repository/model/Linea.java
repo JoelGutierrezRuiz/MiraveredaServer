@@ -12,5 +12,4 @@ import java.sql.Date;
 public class Linea {
     private int linea;
     private int id_factura;
-    private Date changedTS;
 }

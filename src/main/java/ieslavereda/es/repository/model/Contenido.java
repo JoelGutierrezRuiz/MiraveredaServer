@@ -14,10 +14,10 @@ public abstract class Contenido {
     private String genero;
     private int id_tarifa;
     private Date fecha;
-    private int valoMedia;
+    private float valoMedia;
     private String desc;
     private int duracion;
     private String tipo;
-    private Date changedTS;
     private String titulo;
+    private String img;
 }

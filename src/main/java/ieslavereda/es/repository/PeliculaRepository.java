@@ -6,11 +6,14 @@ import com.google.gson.JsonParser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import ieslavereda.es.Api.Conection;
 import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,40 +23,9 @@ public class PeliculaRepository {
 
     private List<Pelicula> peliculas;
 
-    public PeliculaRepository() throws IOException {
+    public PeliculaRepository() throws IOException, InterruptedException {
+
         peliculas = new ArrayList<>();
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("https://api.themoviedb.org/3/movie/top_rated?language=es&page=1")
-                .get()
-                .addHeader("accept", "application/json")
-                .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjZiNjg4MDlkZGMyYTAyOGZmNzZiODY3ZWE5ZjI5MCIsInN1YiI6IjY2NDRjYzAwOGU2NDk3ZWY2ZTViY2JjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MstHGYLhi2JqMKg98iEOknnVws5W12bYu5jRRSu7WN4")
-                .build();
-        Response response = client.newCall(request).execute();
-        String respuestaString = response.body().string();
-        JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
-        for( JsonElement peli : jsonObject.get("results").getAsJsonArray()){
-
-            int id = 1;
-            String nombreDir = "append";
-            String genero = "append";
-            int id_tarifa =1;
-            java.util.Date fecha  = new java.util.Date(2024, Calendar.MARCH,1);
-            int valoracion =1;
-            String desc = peli.getAsJsonObject().get("overview").toString();
-            int duracion = 90;
-            String tipo = "Pelicula";
-            java.util.Date changeTs  = new java.util.Date(2025,Calendar.MARCH,1);
-            java.util.Date changeTs2  = new java.util.Date(2026, Calendar.MARCH,1);
-            java.util.Date disponible  = new java.util.Date(2027,Calendar.MARCH,1);
-            String titulo = peli.getAsJsonObject().get("title").toString();
-
-            Pelicula pelicula = new Pelicula(id,nombreDir,genero,id_tarifa,fecha,valoracion,desc,duracion,tipo,changeTs,changeTs2,disponible,titulo);
-            peliculas.add(pelicula);
-
-        }
-
-
     }
 
     public Pelicula getPelicula(String nombre) throws IOException {
@@ -76,7 +48,7 @@ public class PeliculaRepository {
 
             Pelicula pelicula = new Pelicula();
 
-            pelicula.setId(1);
+            pelicula.setId(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsInt());
             pelicula.setDuracion(122);
             pelicula.setFecha(new Date(2024,1,1));
             pelicula.setGenero("Nose");
@@ -95,7 +67,44 @@ public class PeliculaRepository {
 
     }
 
-    public List<Pelicula> getPeliculas(){
+
+
+
+
+    public List<Pelicula> getPeliculas() throws IOException, ParseException {
+        int totalPaginas = 150;
+        for(int i=0; i<=totalPaginas;i++){
+            Conection connection = new Conection("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
+            Response response = connection.connect();
+            if(response.isSuccessful()) {
+                String respuestaString = response.body().string();
+                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+
+                for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
+
+                    int id = peli.getAsJsonObject().get("id").getAsInt();
+                    String nombreDir = "append";
+                    String genero = "append";
+                    int id_tarifa = 1;
+
+                    String fechaStr = peli.getAsJsonObject().get("release_date").getAsString();
+                    SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
+                    Date fecha = (Date) formatoFecha.parse(fechaStr);
+
+
+                    float valoracion = peli.getAsJsonObject().get("vote_average").getAsFloat();
+                    String desc = peli.getAsJsonObject().get("overview").getAsString();
+                    int duracion = 90;
+                    String tipo = "Pelicula";
+                    java.util.Date disponible = new java.util.Date(2027, Calendar.MARCH, 1);
+                    String titulo = peli.getAsJsonObject().get("title").getAsString();
+                    String img = "https://image.tmdb.org/t/p/original"+peli.getAsJsonObject().get("poster_path").getAsString();
+
+                    Pelicula pelicula = new Pelicula(id,nombreDir, genero, id_tarifa, fecha, valoracion, desc, duracion, tipo, disponible, titulo,img);
+                    peliculas.add(pelicula);
+                }
+            }
+        }
         return peliculas;
     }
 

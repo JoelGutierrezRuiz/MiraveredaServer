@@ -12,5 +12,7 @@ import java.sql.Date;
 public class Actor {
     private int id;
     private String nombre;
-    private Date changedTS;
+    private String personaje;
+    private String img;
+
 }

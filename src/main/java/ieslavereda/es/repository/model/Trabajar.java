@@ -11,6 +11,5 @@ import java.sql.Date;
 public class Trabajar {
     private int id_actor;
     private int id_contenido;
-    private Date changedTS;
 }
 
