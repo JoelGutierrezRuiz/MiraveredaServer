@@ -24,12 +24,12 @@ public class PeliculaRepository {
 
     private List<Pelicula> peliculas;
 
-    private List<Integer> peliculasId;
+//    private List<Integer> peliculasId;
 
     public PeliculaRepository() throws IOException {
         peliculas = new ArrayList<>();
-        peliculasId = new ArrayList<>();
-        getPeliculasId();
+//        peliculasId = new ArrayList<>();
+//        getPeliculasId();
     }
 
 
@@ -68,68 +68,6 @@ public class PeliculaRepository {
         }
     }
 
-
-
-    public Pelicula getPeliculaByid(int idPeli) throws IOException, ParseException {
-
-            Conection connection = new Conection("https://api.themoviedb.org/3/movie/"+idPeli+"?language=es");
-            Response response = connection.connect();
-            Pelicula pelicula;
-            if(response.isSuccessful()) {
-
-                String respuestaString = response.body().string();
-                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
-                int id = jsonObject.get("id").getAsInt();
-                String nombreDir = "append";
-                String genero = "append";
-                int id_tarifa = 1;
-                String fechaStr = jsonObject.get("release_date").getAsString();
-                SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
-                Date fecha = (Date) formatoFecha.parse(fechaStr);
-                float valoracion = jsonObject.get("vote_average").getAsFloat();
-                String desc = jsonObject.get("overview").getAsString();
-                int duracion = 90;
-                String tipo = "Pelicula";
-                java.util.Date disponible = new java.util.Date(2027, Calendar.MARCH, 1);
-                String titulo = jsonObject.get("title").getAsString();
-                String img = "https://image.tmdb.org/t/p/original"+jsonObject.get("poster_path").getAsString();
-
-                pelicula = new Pelicula(id,nombreDir, genero, id_tarifa, fecha, valoracion, desc, duracion, tipo, disponible, titulo,img);
-                return pelicula;
-            }
-            throw new EOFException("No hemos encontrado pelicula");
-    }
-
-
-    public void getPeliculasId() throws IOException {
-        int totalPaginas = 150;
-        for(int i=0; i<=totalPaginas;i++) {
-            Conection connection = new Conection("https://api.themoviedb.org/3/movie/top_rated?language=es&page=" + i);
-            Response response = connection.connect();
-            if (response.isSuccessful()) {
-                String respuestaString = response.body().string();
-                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
-                for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
-                    int id = peli.getAsJsonObject().get("id").getAsInt();
-                    peliculasId.add(id);
-                }
-            }
-        }
-    }
-
-
-
-
-    public List<Pelicula> getPeliculasBd() throws IOException, ParseException {
-        for(int id : peliculasId){
-            peliculas.add(getPeliculaByid(id));
-        }
-        return peliculas;
-    }
-
-
-
-
     public List<Pelicula> getPeliculas() throws IOException, ParseException {
         int totalPaginas = 150;
         for(int i=0; i<=totalPaginas;i++){
@@ -166,5 +104,66 @@ public class PeliculaRepository {
         }
         return peliculas;
     }
+
+
+
+
+//    public Pelicula getPeliculaByid(int idPeli) throws IOException, ParseException {
+//
+//            Conection connection = new Conection("https://api.themoviedb.org/3/movie/"+idPeli+"?language=es");
+//            Response response = connection.connect();
+//            Pelicula pelicula;
+//            if(response.isSuccessful()) {
+//
+//                String respuestaString = response.body().string();
+//                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+//                int id = jsonObject.get("id").getAsInt();
+//                String nombreDir = "append";
+//                String genero = "append";
+//                int id_tarifa = 1;
+//                String fechaStr = jsonObject.get("release_date").getAsString();
+//                SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
+//                Date fecha = (Date) formatoFecha.parse(fechaStr);
+//                float valoracion = jsonObject.get("vote_average").getAsFloat();
+//                String desc = jsonObject.get("overview").getAsString();
+//                int duracion = 90;
+//                String tipo = "Pelicula";
+//                java.util.Date disponible = new java.util.Date(2027, Calendar.MARCH, 1);
+//                String titulo = jsonObject.get("title").getAsString();
+//                String img = "https://image.tmdb.org/t/p/original"+jsonObject.get("poster_path").getAsString();
+//
+//                pelicula = new Pelicula(id,nombreDir, genero, id_tarifa, fecha, valoracion, desc, duracion, tipo, disponible, titulo,img);
+//                return pelicula;
+//            }
+//            throw new EOFException("No hemos encontrado pelicula");
+//    }
+//
+
+//    public void getPeliculasId() throws IOException {
+//        int totalPaginas = 150;
+//        for(int i=0; i<=totalPaginas;i++) {
+//            Conection connection = new Conection("https://api.themoviedb.org/3/movie/top_rated?language=es&page=" + i);
+//            Response response = connection.connect();
+//            if (response.isSuccessful()) {
+//                String respuestaString = response.body().string();
+//                JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+//                for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
+//                    int id = peli.getAsJsonObject().get("id").getAsInt();
+//                    peliculasId.add(id);
+//                }
+//            }
+//        }
+//    }
+
+
+
+
+//    public List<Pelicula> getPeliculasBd() throws IOException, ParseException {
+//        for(int id : peliculasId){
+//            peliculas.add(getPeliculaByid(id));
+//        }
+//        return peliculas;
+//    }
+
 
 }
