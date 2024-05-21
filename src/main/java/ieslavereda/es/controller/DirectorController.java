@@ -13,23 +13,15 @@ import java.util.List;
 @Controller
 
 public class DirectorController {
-
     @Autowired
     DirectorService directorService;
-
     @GetMapping("/api/v1/subeLosDirectores")
     public ResponseEntity<?> addAllDirectores(){
-
         try {
             List<Director> directores = directorService.addAllDirectores();
             return new ResponseEntity<>(directores, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
-
-
-
-
 }

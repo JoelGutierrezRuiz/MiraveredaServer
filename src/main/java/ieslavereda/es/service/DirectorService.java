@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class DirectorService {
     DirectorRepository directorRepository;
 
 
-    public List<Director> addAllDirectores() throws IOException, ParseException {
+    public List<Director> addAllDirectores() throws IOException, ParseException, SQLException {
         return directorRepository.getDirectores();
     }
 
