@@ -22,17 +22,6 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    @GetMapping("/cliente/{nombre}")
-    public ResponseEntity<?> getCliente(@PathVariable("nombre") String nombre){
-        try {
-            Cliente cliente = clienteService.getCliente(nombre);
-            return new ResponseEntity<>(cliente,HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
     @GetMapping("/clientes")
     public ResponseEntity<?> getClientes(){
         try {

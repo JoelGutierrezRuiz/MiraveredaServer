@@ -9,18 +9,11 @@ import java.sql.Date;
 @NoArgsConstructor
 @ToString
 public class Cliente extends Usuario{
-    private Date changedTS;
     private int ntarjeta;
-    private Date fechaNac;
-    private int CP;
-    private String Domicilio;
 
-    public Cliente(int id, String nombre, String apellidos, String contrasenya, String email, int ntarjeta, Date fechaNac, int CP, String domicilio) {
-        super(id, nombre, apellidos, contrasenya, email);
+    public Cliente(int id, int idRol, String nombre, String contrasenya, String apellido, String email, String domicilio, int CP, Date fechaNac, int ntarjeta) {
+        super(id, idRol, nombre, contrasenya, apellido, email, domicilio, CP, fechaNac);
         this.ntarjeta = ntarjeta;
-        this.fechaNac = fechaNac;
-        this.CP = CP;
-        Domicilio = domicilio;
     }
 
     @Override

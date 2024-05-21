@@ -11,8 +11,12 @@ import java.sql.Date;
 @ToString
 public abstract class Usuario {
     private int id;
+    private int idRol;
     private String nombre;
-    private String apellidos;
     private String contrasenya;
+    private String apellido;
     private String email;
+    private String domicilio;
+    private int CP;
+    private Date fechaNac;
 }

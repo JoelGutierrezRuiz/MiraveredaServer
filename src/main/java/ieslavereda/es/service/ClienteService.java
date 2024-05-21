@@ -13,9 +13,7 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
-    public Cliente getCliente(String nombre) throws IOException {
-        return clienteRepository.getCliente(nombre);
-    }
+
 
     public List<?> getClientes() throws IOException {
         return clienteRepository.getClientes();

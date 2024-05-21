@@ -22,8 +22,8 @@ public class MyDataSource {
     @Bean(name="oracleDataSource")
     public static DataSource getMyOracleDataSource() throws SQLException {
         OracleDataSource dataSource = new OracleDataSource();
-        dataSource.setURL("jdbc:oracle:thin:@172.28.201.239:1521:xe"); //ip de la maquina Virtual
-        dataSource.setUser("C##_1DAWGUTIERREZ"); //Poner de user sys as sysdba
+        dataSource.setURL("jdbc:oracle:thin:@172.30.134.233:1539:xe"); //ip de la maquina Virtual
+        dataSource.setUser("C##ARAY"); //Poner de user sys as sysdba
         dataSource.setPassword("1234"); //misma
         return dataSource;
     }
