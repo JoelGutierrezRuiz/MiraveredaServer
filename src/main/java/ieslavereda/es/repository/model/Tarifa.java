@@ -12,5 +12,4 @@ import java.sql.Date;
 public class Tarifa {
    private int id;
    private double precio;
-   private Date changedTS;
 }

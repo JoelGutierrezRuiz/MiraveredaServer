@@ -13,5 +13,4 @@ public class Añadir {
    private int id_contenido;
    private int id_cliente;
    private Date fecha;
-   private Date changedTS;
 }

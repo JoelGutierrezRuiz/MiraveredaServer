@@ -2,7 +2,7 @@ package ieslavereda.es.repository.model;
 
 import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,14 +10,14 @@ import java.sql.Date;
 @ToString
 public abstract class Contenido {
     private int id;
-    private String nombreDire;
+    private int idDirector;
     private String genero;
     private int id_tarifa;
     private Date fecha;
-    private int valoMedia;
+    private float valoMedia;
     private String desc;
     private int duracion;
     private String tipo;
-    private Date changedTS;
     private String titulo;
+    private String img;
 }

@@ -2,17 +2,13 @@ package ieslavereda.es.repository.model;
 
 import lombok.*;
 
-import java.sql.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Actor {
+public class Director {
     private int id;
     private String nombre;
-    private String personaje;
-    private String img;
 
 }

@@ -2,20 +2,15 @@ package ieslavereda.es.repository.model;
 
 import lombok.*;
 
-import java.sql.Date;
-
-@Getter
+import java.util.Date;
 @Setter
 @NoArgsConstructor
-@ToString
 public class Pelicula extends Contenido{
 
    private Date disponibleHasta;
-   private Date changedTS_peli;
 
-    public Pelicula(int id, String nombreDire, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo, Date changedTS, Date changedTS_peli, Date disponibleHasta,String titulo) {
-        super(id, nombreDire, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, changedTS,titulo);
-        this.changedTS_peli = changedTS_peli;
+    public Pelicula(int id, int idDirector, String genero, int id_tarifa, Date fecha, float valoracion, String desc, int duracion, String tipo, Date disponibleHasta,String titulo,String img) {
+        super(id, idDirector, genero, id_tarifa, fecha, valoracion, desc, duracion, tipo,titulo,img);
         this.disponibleHasta = disponibleHasta;
     }
 }

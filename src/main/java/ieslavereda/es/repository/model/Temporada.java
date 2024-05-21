@@ -13,10 +13,8 @@ import java.util.Date;
 @ToString
 public class Temporada{
     private int numero;
-    private Date changedTSTemporada;
 
-    public Temporada(int numero, Date changedTSTemporada) {
+    public Temporada(int numero) {
         this.numero = numero;
-        this.changedTSTemporada = changedTSTemporada;
     }
 }

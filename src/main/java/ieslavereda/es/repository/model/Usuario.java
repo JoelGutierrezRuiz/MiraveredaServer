@@ -15,5 +15,4 @@ public abstract class Usuario {
     private String apellidos;
     private String contrasenya;
     private String email;
-    private Date changedTS;
 }

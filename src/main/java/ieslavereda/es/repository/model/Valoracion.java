@@ -6,5 +6,4 @@ public class Valoracion {
     private int id_contenido;
     private int id_cliente;
     private int valoracion;
-    private Date changedTS;
 }
