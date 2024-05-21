@@ -4,66 +4,37 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import ieslavereda.es.Api.ConectionApi;
+import ieslavereda.es.repository.model.Contenido;
+import ieslavereda.es.repository.model.MyDataSource;
 import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.Date;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
-public class PeliculaRepository {
+public class ContenidoRepository {
 
-    private List<Pelicula> peliculas;
 
-    public PeliculaRepository() throws IOException {
+    List<Pelicula> peliculas;
+
+    public  ContenidoRepository(){
         peliculas = new ArrayList<>();
     }
 
-    public Pelicula getPelicula(String nombre) throws IOException {
-        try {
-            nombre.replace(" ","%");
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("https://api.themoviedb.org/3/search/movie?query="+nombre+"&include_adult=false&language=es&page=1")
-                    .get()
-                    .addHeader("accept", "application/json")
-                    .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjZiNjg4MDlkZGMyYTAyOGZmNzZiODY3ZWE5ZjI5MCIsInN1YiI6IjY2NDRjYzAwOGU2NDk3ZWY2ZTViY2JjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MstHGYLhi2JqMKg98iEOknnVws5W12bYu5jRRSu7WN4")
-                    .build();
-            Response response = client.newCall(request).execute();
-
-            String respuestaString = response.body().string();
-
-            JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
-
-            Pelicula pelicula = new Pelicula();
-
-            pelicula.setId(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsInt());
-            pelicula.setDuracion(122);
-            pelicula.setFecha(new Date(2024,1,1));
-            pelicula.setGenero("Nose");
-            pelicula.setTipo("Accion");
-            pelicula.setDisponibleHasta(new Date(2024,1,1));
-            pelicula.setIdDirector(111);
-            pelicula.setTitulo(jsonObject.get("results").getAsJsonArray().get(0).getAsJsonObject().get("original_title").toString());
-            pelicula.setId_tarifa(22);
-            pelicula.setValoMedia(23);
-            return pelicula;
-
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
 
 
-    public List<Pelicula> getPeliculas() throws IOException, ParseException {
+    public List<Pelicula> insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
         int totalPaginas = 10;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
@@ -78,7 +49,36 @@ public class PeliculaRepository {
             }
             response.body().close();
         }
+        insertarTodos();
         return peliculas;
+    }
+
+    public void insertarTodos() throws SQLException {
+        for(Contenido contenido : peliculas){
+            insertarContenido(contenido);
+            System.out.println(contenido.getTitulo());
+        }
+    }
+
+    public void insertarContenido(Contenido contenido) throws SQLException {
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
+        String query = "{call insertarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        try(Connection con = ds.getConnection()){
+            CallableStatement cs = con.prepareCall(query);
+            cs.setInt(1,contenido.getId());
+            cs.setString(2,contenido.getGenero());
+            cs.setInt(3,1);
+            cs.setInt(4,contenido.getIdDirector());
+            cs.setString(5,contenido.getTitulo());
+            cs.setInt(6,11);
+            cs.setFloat(7,contenido.getValoMedia());
+            cs.setString(8,contenido.getDesc());
+            cs.setInt(9,contenido.getDuracion());
+            cs.setDate(10, (java.sql.Date) contenido.getFecha());
+            cs.setString(11,contenido.getTipo());
+            cs.execute();
+        }
     }
 
 
@@ -117,10 +117,13 @@ public class PeliculaRepository {
             String department = element.getAsJsonObject().get("known_for_department").getAsString();
             if(department.equals("Directing")){
                 System.out.println("exito");
-                 return element.getAsJsonObject().get("id").getAsInt();
+                return element.getAsJsonObject().get("id").getAsInt();
             }
         }
         return -1;
     }
+
+
+
 
 }

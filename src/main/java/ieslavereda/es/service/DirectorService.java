@@ -16,7 +16,7 @@ public class DirectorService {
     DirectorRepository directorRepository;
 
 
-    public List<Director> addAllDirectores() throws IOException, ParseException, SQLException {
+    public List<Director> insertarTodos() throws IOException, ParseException, SQLException {
         return directorRepository.getDirectores();
     }
 

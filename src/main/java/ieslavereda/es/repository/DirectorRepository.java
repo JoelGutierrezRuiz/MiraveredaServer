@@ -64,6 +64,7 @@ public class DirectorRepository {
     }
 
     public Director getIdDirector(int idPelicula){
+
         try {
             ConectionApi connection = new ConectionApi(("https://api.themoviedb.org/3/movie/"+idPelicula+"?append_to_response=credits&language=es"));
             Response response = connection.response();
@@ -86,22 +87,14 @@ public class DirectorRepository {
         return null;
     }
 
-
     public void insertarDirector(int id,String nombre) throws SQLException {
-
         DataSource ds = MyDataSource.getMyOracleDataSource();
         String query = " {call insertarDirector(?,?)}";
-
         try(Connection con = ds.getConnection()){
             CallableStatement cs = con.prepareCall(query);
             cs.setInt(1,id);
             cs.setString(2,nombre);
             cs.execute();
         }
-
-
-
     }
-
-
 }

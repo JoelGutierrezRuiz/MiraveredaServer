@@ -15,10 +15,10 @@ import java.util.List;
 public class DirectorController {
     @Autowired
     DirectorService directorService;
-    @GetMapping("/api/v1/subeLosDirectores")
-    public ResponseEntity<?> addAllDirectores(){
+    @GetMapping("/api/v1/insertarDirectores")
+    public ResponseEntity<?> insertarTodos(){
         try {
-            List<Director> directores = directorService.addAllDirectores();
+            List<Director> directores = directorService.insertarTodos();
             return new ResponseEntity<>(directores, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
