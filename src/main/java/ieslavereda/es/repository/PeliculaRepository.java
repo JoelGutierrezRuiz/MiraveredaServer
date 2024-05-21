@@ -7,17 +7,15 @@ import com.google.gson.JsonParser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import ieslavereda.es.Api.Conection;
+import ieslavereda.es.Api.ConectionApi;
 import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @Repository
@@ -63,11 +61,14 @@ public class PeliculaRepository {
             throw new RuntimeException(e);
         }
     }
+
+
+
     public List<Pelicula> getPeliculas() throws IOException, ParseException {
-        int totalPaginas = 150;
+        int totalPaginas = 10;
         for(int i=0; i<=totalPaginas;i++){
-            Conection connection = new Conection("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
-            Response response = connection.connect();
+            ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
+            Response response = connection.response();
             if(response.isSuccessful()) {
                 String respuestaString = response.body().string();
                 JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
@@ -80,10 +81,12 @@ public class PeliculaRepository {
         }
         return peliculas;
     }
+
+
     public Pelicula getPeliculaById(int idPelicula){
         try {
-            Conection connection = new Conection(("https://api.themoviedb.org/3/movie/"+idPelicula+"?append_to_response=credits&language=es"));
-            Response response = connection.connect();
+            ConectionApi connection = new ConectionApi(("https://api.themoviedb.org/3/movie/"+idPelicula+"?append_to_response=credits&language=es"));
+            Response response = connection.response();
             if(response.isSuccessful()) {
                 String respuestaString = response.body().string();
                 JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
@@ -108,12 +111,11 @@ public class PeliculaRepository {
         }
         throw new RuntimeException("No se ha encontrado la película");
     }
-
     public Integer getIdDirector(JsonArray casting){
         for (JsonElement element : casting){
             String department = element.getAsJsonObject().get("known_for_department").getAsString();
             if(department.equals("Directing")){
-                System.out.println("exito");
+                System.out.println(element.getAsJsonObject().get("name"));
                  return element.getAsJsonObject().get("id").getAsInt();
             }
         }

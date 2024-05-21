@@ -23,7 +23,7 @@ public class MyDataSource {
     public static DataSource getMyOracleDataSource() throws SQLException {
         OracleDataSource dataSource = new OracleDataSource();
         dataSource.setURL("jdbc:oracle:thin:@172.28.201.239:1521:xe"); //ip de la maquina Virtual
-        dataSource.setUser("C##1DAWLIS"); //Poner de user sys as sysdba
+        dataSource.setUser("C##_1DAWGUTIERREZ"); //Poner de user sys as sysdba
         dataSource.setPassword("1234"); //misma
         return dataSource;
     }

@@ -6,11 +6,16 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import ieslavereda.es.repository.model.Actor;
+import ieslavereda.es.repository.model.MyDataSource;
 import ieslavereda.es.repository.model.Pelicula;
+import oracle.jdbc.internal.OracleTypes;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -20,10 +25,10 @@ public class ActorRepository {
 
 
 
+
     public ActorRepository(){
         actores = new ArrayList<>();
     }
-
 
     public List<Actor> getActores (int idPelicula) throws RuntimeException{
 
@@ -61,6 +66,26 @@ public class ActorRepository {
 
         return actores;
 
+
+
+    }
+
+    public boolean getPrueba() throws  SQLException{
+        boolean auth = false;
+
+        String sql = " {? = call prueba(?)}";
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+
+        try(Connection con = ds.getConnection();
+            CallableStatement cs = con.prepareCall(sql)) {
+            cs.setInt(2,2);
+            cs.registerOutParameter(1, OracleTypes.BOOLEAN);
+            cs.execute();
+            auth = cs.getBoolean(1);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage());
+        }
+        return auth;
 
 
     }

@@ -6,19 +6,17 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-public class Conection {
+public class ConectionApi {
 
     private String url;
     OkHttpClient client;
 
-    public Conection (String url) {
+    public ConectionApi(String url) {
         this.url = url;
         client = new OkHttpClient();
     }
 
-    public Response connect() throws IOException {
-
-
+    public Response response() throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .get()
