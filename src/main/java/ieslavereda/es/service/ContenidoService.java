@@ -45,7 +45,7 @@ public class ContenidoService {
 
     }
 
-    public boolean postContenido(JsonObject contenido){
+    public boolean postContenido(Contenido contenido) throws SQLException {
 
         return contenidoRepository.postContenido(contenido);
 

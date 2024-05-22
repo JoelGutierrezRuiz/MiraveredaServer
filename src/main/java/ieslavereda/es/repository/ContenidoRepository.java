@@ -98,8 +98,13 @@ public class ContenidoRepository {
         return null;
     }
 
-    public boolean postContenido(JsonObject contenido){
+    public boolean postContenido(Contenido contenido) throws SQLException {
+
+
+        java.sql.Date fecha = new java.sql.Date(contenido.getFecha().getTime());  // Usar java.sql.Date con nombre completo
+        contenido.setFecha(fecha);
         System.out.println(contenido);
+        insertarContenido(contenido);
         return true;
     }
 

@@ -1,6 +1,7 @@
 package ieslavereda.es.controller;
 
 import com.google.gson.JsonObject;
+import ieslavereda.es.repository.ContenidoRepository;
 import ieslavereda.es.repository.model.Contenido;
 import ieslavereda.es.repository.model.Pelicula;
 import ieslavereda.es.service.ContenidoService;
@@ -59,9 +60,10 @@ public class ContenidoController {
     }
 
     @PostMapping("/insertarContenido")
-    public boolean postContenido(@RequestBody JsonObject contenido){
+    public boolean postContenido(@RequestBody Contenido contenido) throws SQLException {
         return contenidoService.postContenido(contenido);
     }
+
 
     @GetMapping("/insertarTodosLosContenidos")
     public void insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
