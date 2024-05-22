@@ -17,9 +17,9 @@ public class DirectorController {
     @Autowired
     DirectorService directorService;
     @GetMapping("/api/v1/insertarDirectores")
-    public ResponseEntity<?> insertarTodos(){
+    public ResponseEntity<?> insertarDirectores(){
         try {
-            List<Director> directores = directorService.insertarTodos();
+            List<Director> directores = directorService.insertarDirectores();
             return new ResponseEntity<>(directores, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
