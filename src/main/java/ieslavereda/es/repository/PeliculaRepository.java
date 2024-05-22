@@ -103,7 +103,7 @@ public class PeliculaRepository {
                 int idDirector = getIdDirector(jsonObject.get("credits").getAsJsonObject().get("crew").getAsJsonArray());
                 int duration = jsonObject.get("runtime").getAsInt();
                 response.body().close();
-                return new Pelicula(idPelicula, idDirector, genre, 1, fecha, rating, overview, duration, "Película", null, title, img);
+                return new Pelicula(idPelicula,11,idDirector, genre, 1, fecha, rating, overview, duration, "Película", null, title, img);
             }
         }catch (Exception e){
             throw new RuntimeException(e);

@@ -27,36 +27,75 @@ public class ContenidoRepository {
 
 
     public List<Contenido> getContenido(String titulo) throws SQLException {
-
         titulo.replace("%20"," ");
+        titulo.toLowerCase();
+        String busqueda = "%"+titulo+"%";
         List<Contenido> contenidos = new ArrayList<>();
         DataSource ds = MyDataSource.getMyOracleDataSource();
-        String query = "SELECT * from contenido where titulo=?";
+        String query = "SELECT * from contenido where lower(titulo) like ?";
+
 
         try(Connection con = ds.getConnection();
             PreparedStatement prep = con.prepareStatement(query)){
-            prep.setString(1,titulo);
+            prep.setString(1,busqueda);
             ResultSet rs = prep.executeQuery();
             Contenido contenido;
 
             while(rs.next()){
-
-                contenido = new Contenido(rs.getInt("ID"),rs.getInt("ID_DIRECTOR"),rs.getString("GENERO"),rs.getInt("ID_TARIFA"),rs.getDate("FECHAESTRENO")
+                contenido = new Contenido(rs.getInt("ID"),rs.getInt("PRECIO"),rs.getInt("ID_DIRECTOR"),rs.getString("GENERO"),rs.getInt("ID_TARIFA"),rs.getDate("FECHAESTRENO")
                 ,rs.getFloat("VALORACIONMEDIA"),rs.getString("DESCRIPCION"),rs.getInt("DURACION"),rs.getString("TIPO"),
                         rs.getString("TITULO"),rs.getString("IMAGEN"));
-
                 contenidos.add(contenido);
-
             }
-
             return contenidos;
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+    }
 
+    public List<Contenido> getContenidos() throws SQLException {
 
+        List<Contenido> contenidos = new ArrayList<>();
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        String query = "SELECT * from contenido";
+
+        try(Connection con = ds.getConnection();
+            PreparedStatement prep = con.prepareStatement(query)){
+            ResultSet rs = prep.executeQuery();
+            Contenido contenido;
+            while(rs.next()){
+                contenido = new Contenido(rs.getInt("ID"), rs.getInt("precio"), rs.getInt("ID_DIRECTOR"),rs.getString("GENERO"),rs.getInt("ID_TARIFA"),rs.getDate("FECHAESTRENO")
+                        ,rs.getFloat("VALORACIONMEDIA"),rs.getString("DESCRIPCION"),rs.getInt("DURACION"),rs.getString("TIPO"),
+                        rs.getString("TITULO"),rs.getString("IMAGEN"));
+                contenidos.add(contenido);
+            }
+            return contenidos;
         }catch (SQLException e){
             throw new SQLException(e);
         }
 
 
+    }
+
+    public Contenido getContenidoById(Integer idContenido) throws SQLException {
+        Contenido contenido;
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        String query = "select * from contenido where id=?";
+        try(Connection con = ds.getConnection();
+        PreparedStatement prep = con.prepareStatement(query)){
+            prep.setInt(1,idContenido);
+            ResultSet rs = prep.executeQuery();
+            while (rs.next()){
+                contenido= new Contenido(rs.getInt("ID"), rs.getInt("precio"), rs.getInt("ID_DIRECTOR"),rs.getString("GENERO"),rs.getInt("ID_TARIFA"),rs.getDate("FECHAESTRENO")
+                        ,rs.getFloat("VALORACIONMEDIA"),rs.getString("DESCRIPCION"),rs.getInt("DURACION"),rs.getString("TIPO"),
+                        rs.getString("TITULO"),rs.getString("IMAGEN"));
+                return contenido;
+            }
+
+        }catch (SQLException e){
+            throw  new SQLException(e);
+        }
+        return null;
     }
 
     public boolean postContenido(JsonObject contenido){
@@ -129,7 +168,7 @@ public class ContenidoRepository {
                 int idDirector = getIdDirector(jsonObject.get("credits").getAsJsonObject().get("crew").getAsJsonArray());
                 int duration = jsonObject.get("runtime").getAsInt();
                 response.body().close();
-                return new Pelicula(idPelicula, idDirector, genre, 1, fecha, rating, overview, duration, "Película", null, title, img);
+                return new Pelicula(idPelicula,11,idDirector, genre, 1, fecha, rating, overview, duration, "Película", null, title, img);
             }
         }catch (Exception e){
             throw new RuntimeException(e);

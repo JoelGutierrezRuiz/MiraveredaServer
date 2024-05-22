@@ -14,9 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +84,6 @@ public class DirectorRepository {
     }
 
 
-
     public void insertarDirector(int id,String nombre) throws SQLException {
         DataSource ds = MyDataSource.getMyOracleDataSource();
         String query = " {call insertarDirector(?,?)}";
@@ -97,5 +94,22 @@ public class DirectorRepository {
             cs.execute();
             cs.close();
         }
+    }
+
+    public Director getDirectorById(int idDirector) throws SQLException {
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        String query = " select * from director where id=?";
+        try (Connection con = ds.getConnection();
+             PreparedStatement prep = con.prepareStatement(query)){
+            prep.setInt(1,idDirector);
+            ResultSet rs = prep.executeQuery();
+            while(rs.next()){
+                Director director = new Director(rs.getInt("id"), rs.getString("nombre"));
+                return director;
+            }
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+        return null;
     }
 }

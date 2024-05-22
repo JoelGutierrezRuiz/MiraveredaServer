@@ -10,6 +10,7 @@ import java.util.Date;
 @ToString
 public  class Contenido {
     private int id;
+    private int precio;
     private int idDirector;
     private String genero;
     private int id_tarifa;

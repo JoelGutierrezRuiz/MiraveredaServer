@@ -20,4 +20,14 @@ public class DirectorService {
         return directorRepository.insertarDirectores();
     }
 
+    public Director getDirectorById(Integer idDirector) throws SQLException {
+
+        try {
+            return directorRepository.getDirectorById(idDirector);
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+
+    }
+
 }

@@ -10,7 +10,7 @@ import java.sql.Date;
 @ToString
 public class Corto extends Contenido{
 
-    public Corto(int id, int idDirector, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo,String titulo,String img) {
-        super(id, idDirector, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, titulo,img);
+    public Corto(int id,int precio ,int idDirector, String genero, int id_tarifa, Date fecha, int valoMedia, String desc, int duracion, String tipo,String titulo,String img) {
+        super(id,precio ,idDirector, genero, id_tarifa, fecha, valoMedia, desc, duracion, tipo, titulo,img);
     }
 }

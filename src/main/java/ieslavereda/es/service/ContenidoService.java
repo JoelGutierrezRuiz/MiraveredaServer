@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLPermission;
 import java.text.ParseException;
 import java.util.List;
 
@@ -24,6 +25,24 @@ public class ContenidoService {
         }catch (SQLException e){
             throw new SQLException(e);
         }
+    }
+    public List<Contenido> getContenidos() throws SQLException {
+        try {
+            return contenidoRepository.getContenidos();
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+    }
+
+    public Contenido getContenidoById(Integer idContenido) throws SQLException {
+
+        try{
+            return contenidoRepository.getContenidoById(idContenido);
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+
+
     }
 
     public boolean postContenido(JsonObject contenido){
