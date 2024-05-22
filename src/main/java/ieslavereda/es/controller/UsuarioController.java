@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -32,6 +33,30 @@ public class UsuarioController {
             List<Usuario> usuarios = usuarioService.getUsuarioByName(nombre);
             return new ResponseEntity<>(usuarios,HttpStatus.OK);
         }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/usuarios")
+    public ResponseEntity<?> addUsuario(@RequestBody UsuarioConcreto usuario){
+        try{
+            Boolean usuario1 = usuarioService.addUsuario(usuario);
+            if (!usuario1){
+                return new ResponseEntity<>(usuario1, HttpStatus.FOUND);
+            }
+            return new ResponseEntity<>(usuario1, HttpStatus.OK);
+        } catch (SQLException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/usuarios/{email}")
+    public ResponseEntity<?> deleteUsario(@PathVariable("email") String email){
+        try {
+            boolean usuario = usuarioService.deleteUsuario(email);
+            if (!usuario){
+                return new ResponseEntity<>(usuario, HttpStatus.FOUND);
+            }
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        } catch (SQLException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

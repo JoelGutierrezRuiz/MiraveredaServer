@@ -120,7 +120,6 @@ public class ContenidoRepository {
                 String fechaStr = jsonObject.get("release_date").getAsString();
                 SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
 
-
                 Date fechaUtil = formatoFecha.parse(fechaStr);
                 java.sql.Date fecha = new java.sql.Date(fechaUtil.getTime());  // Usar java.sql.Date con nombre completo
 
