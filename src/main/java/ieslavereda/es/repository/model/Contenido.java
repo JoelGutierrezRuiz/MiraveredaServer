@@ -8,7 +8,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public abstract class Contenido {
+public  class Contenido {
     private int id;
     private int idDirector;
     private String genero;

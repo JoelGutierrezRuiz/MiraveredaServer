@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public class UsuarioRepository {
+
     @Autowired
     @Qualifier("oracleDataSource")
     DataSource dataSource;

@@ -14,5 +14,4 @@ public class Actor {
     private String nombre;
     private String personaje;
     private String img;
-
 }
