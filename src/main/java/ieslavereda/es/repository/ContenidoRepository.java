@@ -9,33 +9,78 @@ import ieslavereda.es.Api.ConectionApi;
 import ieslavereda.es.repository.model.Contenido;
 import ieslavereda.es.repository.model.MyDataSource;
 import ieslavereda.es.repository.model.Pelicula;
+import oracle.jdbc.internal.OracleTypes;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 @Repository
 public class ContenidoRepository {
 
 
-    List<Pelicula> peliculas;
 
-    public  ContenidoRepository(){
-        peliculas = new ArrayList<>();
+    public List<Contenido> getContenido(String titulo) throws SQLException {
+
+        titulo.replace("%20"," ");
+        List<Contenido> contenidos = new ArrayList<>();
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        String query = "SELECT * from contenido where titulo=?";
+
+        try(Connection con = ds.getConnection();
+            PreparedStatement prep = con.prepareStatement(query)){
+            prep.setString(1,titulo);
+            ResultSet rs = prep.executeQuery();
+            Contenido contenido;
+
+            while(rs.next()){
+
+                contenido = new Contenido(rs.getInt("ID"),rs.getInt("ID_DIRECTOR"),rs.getString("GENERO"),rs.getInt("ID_TARIFA"),rs.getDate("FECHAESTRENO")
+                ,rs.getFloat("VALORACIONMEDIA"),rs.getString("DESCRIPCION"),rs.getInt("DURACION"),rs.getString("TIPO"),
+                        rs.getString("TITULO"),rs.getString("IMAGEN"));
+
+                contenidos.add(contenido);
+
+            }
+
+            return contenidos;
+
+
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+
+
+    }
+
+    public boolean postContenido(JsonObject contenido){
+        System.out.println(contenido);
+        return true;
     }
 
 
 
+
+
+
+
+
+
+
+
+
+    List<Pelicula> peliculas;
+    public  ContenidoRepository(){
+        peliculas = new ArrayList<>();
+    }
     public List<Pelicula> insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
-        int totalPaginas = 10;
+        int totalPaginas = 1;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
             Response response = connection.response();
@@ -49,39 +94,16 @@ public class ContenidoRepository {
             }
             response.body().close();
         }
+        System.out.println("salimos");
         insertarTodos();
         return peliculas;
     }
-
     public void insertarTodos() throws SQLException {
         for(Contenido contenido : peliculas){
             insertarContenido(contenido);
             System.out.println(contenido.getTitulo());
         }
     }
-
-    public void insertarContenido(Contenido contenido) throws SQLException {
-        DataSource ds = MyDataSource.getMyOracleDataSource();
-        //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
-        String query = "{call insertarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
-        try(Connection con = ds.getConnection()){
-            CallableStatement cs = con.prepareCall(query);
-            cs.setInt(1,contenido.getId());
-            cs.setString(2,contenido.getGenero());
-            cs.setInt(3,1);
-            cs.setInt(4,contenido.getIdDirector());
-            cs.setString(5,contenido.getTitulo());
-            cs.setInt(6,11);
-            cs.setFloat(7,contenido.getValoMedia());
-            cs.setString(8,contenido.getDesc());
-            cs.setInt(9,contenido.getDuracion());
-            cs.setDate(10, (java.sql.Date) contenido.getFecha());
-            cs.setString(11,contenido.getTipo());
-            cs.execute();
-        }
-    }
-
-
     public Pelicula getPeliculaById(int idPelicula){
         try {
             ConectionApi connection = new ConectionApi(("https://api.themoviedb.org/3/movie/"+idPelicula+"?append_to_response=credits&language=es"));
@@ -97,7 +119,11 @@ public class ContenidoRepository {
 
                 String fechaStr = jsonObject.get("release_date").getAsString();
                 SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-dd-MM");
-                Date fecha = (Date) formatoFecha.parse(fechaStr);
+
+
+                Date fechaUtil = formatoFecha.parse(fechaStr);
+                java.sql.Date fecha = new java.sql.Date(fechaUtil.getTime());  // Usar java.sql.Date con nombre completo
+
 
                 float rating = jsonObject.get("vote_average").getAsFloat();
                 int idDirector = getIdDirector(jsonObject.get("credits").getAsJsonObject().get("crew").getAsJsonArray());
@@ -110,20 +136,41 @@ public class ContenidoRepository {
         }
         throw new RuntimeException("No se ha encontrado la película");
     }
-
-
     public Integer getIdDirector(JsonArray casting){
         for (JsonElement element : casting){
             String department = element.getAsJsonObject().get("known_for_department").getAsString();
             if(department.equals("Directing")){
-                System.out.println("exito");
+                System.out.println(element.getAsJsonObject().get("id").getAsInt());
                 return element.getAsJsonObject().get("id").getAsInt();
             }
         }
         return -1;
     }
+    public void insertarContenido(Contenido contenido) throws SQLException {
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
+        String query = "{call ?:=insertarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        try(Connection con = ds.getConnection()){
+            CallableStatement cs = con.prepareCall(query);
+            cs.registerOutParameter(1, OracleTypes.BOOLEAN);
+            cs.setInt(2,contenido.getId());
+            cs.setString(3,contenido.getGenero());
+            cs.setString(4,contenido.getTipo());
+            cs.setString(5,contenido.getImg());
+            cs.setInt(6,1);
+            cs.setInt(7,contenido.getIdDirector());
+            cs.setString(8,contenido.getTitulo());
+            cs.setInt(9,11);
+            cs.setFloat(10,contenido.getValoMedia());
+            cs.setString(11,contenido.getDesc());
+            cs.setInt(12,contenido.getDuracion());
+            cs.setDate(13, (java.sql.Date) contenido.getFecha());
 
+            cs.execute();
 
+            System.out.println(cs.getBoolean(1));
+        }
+    }
 
 
 }

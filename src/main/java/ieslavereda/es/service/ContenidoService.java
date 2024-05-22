@@ -1,8 +1,8 @@
 package ieslavereda.es.service;
 
-import ieslavereda.es.Api.Resources;
+import com.google.gson.JsonObject;
 import ieslavereda.es.repository.ContenidoRepository;
-import ieslavereda.es.repository.model.Pelicula;
+import ieslavereda.es.repository.model.Contenido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,22 @@ public class ContenidoService {
     @Autowired
     ContenidoRepository contenidoRepository;
 
+    public List<Contenido> getContenido(String titulo) throws SQLException {
 
-    public void subirPeliculas() throws IOException, ParseException, SQLException {
+        try {
+            return contenidoRepository.getContenido(titulo);
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
+    }
+
+    public boolean postContenido(JsonObject contenido){
+
+        return contenidoRepository.postContenido(contenido);
+
+    }
+
+    public void insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
 
         contenidoRepository.insertarTodosLosContenidos();
 

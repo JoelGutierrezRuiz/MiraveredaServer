@@ -12,7 +12,7 @@ import ieslavereda.es.repository.model.Pelicula;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.util.Date;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

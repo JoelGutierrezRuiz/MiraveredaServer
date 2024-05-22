@@ -35,8 +35,8 @@ public class DirectorRepository {
         directores = new ArrayList<>();
     }
 
-    public List<Director> getDirectores() throws IOException, ParseException, SQLException {
-        int totalPaginas = 10;
+    public List<Director> insertarDirectores() throws IOException, ParseException, SQLException {
+        int totalPaginas = 1;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
             Response response = connection.response();
@@ -53,7 +53,6 @@ public class DirectorRepository {
         insertarTodos();
         return directores;
     }
-
     public void insertarTodos() throws SQLException {
         for (Director director : directores){
             if(director!=null) {
@@ -62,7 +61,6 @@ public class DirectorRepository {
             }
         }
     }
-
     public Director getIdDirector(int idPelicula){
 
         try {
@@ -87,6 +85,8 @@ public class DirectorRepository {
         return null;
     }
 
+
+
     public void insertarDirector(int id,String nombre) throws SQLException {
         DataSource ds = MyDataSource.getMyOracleDataSource();
         String query = " {call insertarDirector(?,?)}";
@@ -95,6 +95,7 @@ public class DirectorRepository {
             cs.setInt(1,id);
             cs.setString(2,nombre);
             cs.execute();
+            cs.close();
         }
     }
 }
