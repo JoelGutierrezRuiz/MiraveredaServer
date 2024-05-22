@@ -12,7 +12,7 @@ public class SpringBootClass2324Application {
         SpringApplication.run(SpringBootClass2324Application.class, args);
     }
 
-    // Configuración de CORS global
+//     Configuración de CORS global
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -26,4 +26,5 @@ public class SpringBootClass2324Application {
             }
         };
     }
+
 }
