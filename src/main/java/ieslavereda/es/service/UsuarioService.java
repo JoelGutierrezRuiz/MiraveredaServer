@@ -23,10 +23,16 @@ public class UsuarioService {
     public List<Usuario> getUsuarioByName(String nombre) throws SQLException{
         return usuarioRepository.getUsuarioByName(nombre);
     }
+    public UsuarioConcreto getUsuarioById(int id) throws SQLException{
+        return usuarioRepository.getUsuarioById(id);
+    }
     public boolean addUsuario(UsuarioConcreto usuario) throws SQLException{
         return usuarioRepository.addUsuario(usuario);
     }
     public boolean deleteUsuario(String email) throws SQLException{
         return usuarioRepository.deleteUsuario(email);
+    }
+    public boolean updateUsuario(UsuarioConcreto usuario) throws SQLException{
+        return usuarioRepository.updateUsuario(usuario);
     }
 }
