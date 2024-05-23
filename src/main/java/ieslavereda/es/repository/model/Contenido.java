@@ -2,13 +2,14 @@ package ieslavereda.es.repository.model;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public  class Contenido {
+public  class Contenido implements Serializable {
     private int id;
     private int precio;
     private int idDirector;

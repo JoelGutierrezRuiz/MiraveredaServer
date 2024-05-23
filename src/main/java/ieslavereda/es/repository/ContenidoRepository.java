@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.squareup.okhttp.Response;
 import ieslavereda.es.Api.ConectionApi;
 import ieslavereda.es.repository.model.Contenido;
+import ieslavereda.es.repository.model.Data;
 import ieslavereda.es.repository.model.MyDataSource;
 import ieslavereda.es.repository.model.Pelicula;
 import oracle.jdbc.internal.OracleTypes;
@@ -26,14 +27,13 @@ public class ContenidoRepository {
 
 
 
-    public List<Contenido> getContenido(String titulo) throws SQLException {
+    public Data getContenido(String titulo) throws SQLException {
         titulo.replace("%20"," ");
         titulo.toLowerCase();
         String busqueda = "%"+titulo+"%";
         List<Contenido> contenidos = new ArrayList<>();
         DataSource ds = MyDataSource.getMyOracleDataSource();
         String query = "SELECT * from contenido where lower(titulo) like ?";
-
 
         try(Connection con = ds.getConnection();
             PreparedStatement prep = con.prepareStatement(query)){
@@ -47,13 +47,12 @@ public class ContenidoRepository {
                         rs.getString("TITULO"),rs.getString("IMAGEN"));
                 contenidos.add(contenido);
             }
-            return contenidos;
+            return new Data(contenidos);
         }catch (SQLException e){
             throw new SQLException(e);
         }
     }
-
-    public List<Contenido> getContenidos() throws SQLException {
+    public Data getContenidos() throws SQLException {
 
         List<Contenido> contenidos = new ArrayList<>();
         DataSource ds = MyDataSource.getMyOracleDataSource();
@@ -69,14 +68,13 @@ public class ContenidoRepository {
                         rs.getString("TITULO"),rs.getString("IMAGEN"));
                 contenidos.add(contenido);
             }
-            return contenidos;
+            return new Data(contenidos);
         }catch (SQLException e){
             throw new SQLException(e);
         }
 
 
     }
-
     public Contenido getContenidoById(Integer idContenido) throws SQLException {
         Contenido contenido;
         DataSource ds = MyDataSource.getMyOracleDataSource();
@@ -97,25 +95,65 @@ public class ContenidoRepository {
         }
         return null;
     }
-
     public boolean postContenido(Contenido contenido) throws SQLException {
-
-
         java.sql.Date fecha = new java.sql.Date(contenido.getFecha().getTime());  // Usar java.sql.Date con nombre completo
         contenido.setFecha(fecha);
-        System.out.println(contenido);
         insertarContenido(contenido);
         return true;
     }
 
+    public Contenido putContenido(Contenido contenido) throws SQLException {
+
+        //transformamos fecha a sql
+        java.sql.Date fecha = new java.sql.Date(contenido.getFecha().getTime());  // Usar java.sql.Date con nombre completo
+        contenido.setFecha(fecha);
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
+        String query = "{call actualizarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        try(Connection con = ds.getConnection()){
+            CallableStatement cs = con.prepareCall(query);
+            cs.setInt(1,contenido.getId());
+            cs.setString(2,contenido.getGenero());
+            cs.setString(3,contenido.getTipo());
+            cs.setString(4,contenido.getImg());
+            cs.setInt(5,1);
+            cs.setInt(6,contenido.getIdDirector());
+            cs.setString(7,contenido.getTitulo());
+            cs.setInt(8,contenido.getPrecio());
+            cs.setFloat(9,contenido.getValoMedia());
+            cs.setString(10,contenido.getDesc());
+            cs.setInt(11,contenido.getDuracion());
+            cs.setDate(12, (java.sql.Date) contenido.getFecha());
+            System.out.println(contenido.getId());
+            cs.execute();
 
 
+            return contenido;
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
 
 
+    }
+
+    public void deleteContenido(Integer idContenido) throws SQLException {
+
+        DataSource ds = MyDataSource.getMyOracleDataSource();
+        String query = " call eliminarContenido(?)";
+        try(Connection con = ds.getConnection();
+        ) {
+            CallableStatement cs = con.prepareCall(query);
+            cs.setInt(1,idContenido);
+            cs.executeQuery();
+            System.out.println(idContenido);
+            cs.close();
+
+        }catch (SQLException e){
+            throw new SQLException(e);
+        }
 
 
-
-
+    }
 
 
 
@@ -192,22 +230,21 @@ public class ContenidoRepository {
     public void insertarContenido(Contenido contenido) throws SQLException {
         DataSource ds = MyDataSource.getMyOracleDataSource();
         //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
-        String query = "{call ?:=insertarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        String query = "{call ?:=insertarContenido(?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection con = ds.getConnection()){
             CallableStatement cs = con.prepareCall(query);
             cs.registerOutParameter(1, OracleTypes.BOOLEAN);
-            cs.setInt(2,contenido.getId());
-            cs.setString(3,contenido.getGenero());
-            cs.setString(4,contenido.getTipo());
-            cs.setString(5,contenido.getImg());
-            cs.setInt(6,1);
-            cs.setInt(7,contenido.getIdDirector());
-            cs.setString(8,contenido.getTitulo());
-            cs.setInt(9,11);
-            cs.setFloat(10,contenido.getValoMedia());
-            cs.setString(11,contenido.getDesc());
-            cs.setInt(12,contenido.getDuracion());
-            cs.setDate(13, (java.sql.Date) contenido.getFecha());
+            cs.setString(2,contenido.getGenero());
+            cs.setString(3,contenido.getTipo());
+            cs.setString(4,contenido.getImg());
+            cs.setInt(5,1);
+            cs.setInt(6,contenido.getIdDirector());
+            cs.setString(7,contenido.getTitulo());
+            cs.setInt(8,11);
+            cs.setFloat(9,contenido.getValoMedia());
+            cs.setString(10,contenido.getDesc());
+            cs.setInt(11,contenido.getDuracion());
+            cs.setDate(12, (java.sql.Date) contenido.getFecha());
 
             cs.execute();
 
