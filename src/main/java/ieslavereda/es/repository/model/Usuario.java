@@ -14,7 +14,7 @@ public abstract class Usuario {
     private int idRol;
     private String nombre;
     private String contrasenya;
-    private String apellido;
+    private String apellidos;
     private String email;
     private String domicilio;
     private int CP;

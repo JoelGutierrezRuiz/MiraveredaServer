@@ -69,6 +69,32 @@ public class UsuarioRepository {
         }
         return usuarios;
     }
+    public UsuarioConcreto getUsuarioById(int id) throws SQLException {
+        UsuarioConcreto usuario = null;
+        String query = "{call getUsuarioById(?,?)}";
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement cs = connection.prepareCall(query)) {
+            cs.registerOutParameter(2, Types.REF_CURSOR);
+            cs.setInt(1, id);
+            cs.execute();
+            try (ResultSet rs = (ResultSet) cs.getObject(2)) {
+                if (rs.next()) {
+                    usuario = new UsuarioConcreto(
+                            rs.getInt(1),
+                            rs.getInt(2),
+                            rs.getString(3),
+                            rs.getString(4),
+                            rs.getString(5),
+                            rs.getString(6),
+                            rs.getString(7),
+                            rs.getInt(8),
+                            rs.getDate(9)
+                    );
+                }
+            }
+        }
+        return usuario;
+    }
     public boolean addUsuario(Usuario usuario) {
         String query = "{ call addUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?) }";
         try (Connection connection = dataSource.getConnection();
@@ -76,7 +102,7 @@ public class UsuarioRepository {
             cs.setInt(1, usuario.getIdRol());
             cs.setString(2, usuario.getNombre());
             cs.setString(3, usuario.getContrasenya());
-            cs.setString(4, usuario.getApellido());
+            cs.setString(4, usuario.getApellidos());
             cs.setString(5, usuario.getEmail());
             cs.setString(6, usuario.getDomicilio());
             cs.setInt(7, usuario.getCP());
@@ -113,5 +139,43 @@ public class UsuarioRepository {
             e.printStackTrace();
         }
         return eliminado;
+    }
+    public boolean updateUsuario(Usuario usuario){
+        String query = "{ call updateUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?) }";
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement cs = connection.prepareCall(query)) {
+            cs.setInt(1, usuario.getIdRol());
+            cs.setString(2, usuario.getNombre());
+            cs.setString(3, usuario.getContrasenya());
+            cs.setString(4, usuario.getApellidos());
+            cs.setString(5, usuario.getEmail());
+            cs.setString(6, usuario.getDomicilio());
+            cs.setInt(7, usuario.getCP());
+            cs.setDate(8, new java.sql.Date(usuario.getFechaNac().getTime()));
+            cs.registerOutParameter(9, Types.INTEGER);
+
+            cs.execute();
+            int result = cs.getInt(9);
+            return result == 1; // Retorna true si la modificación fue exitosa
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Manejo de excepción, retorna false en caso de error
+        }
+    }
+    public boolean iniciarSesion(String email, String contrasenya) throws SQLException {
+        boolean resultado = false;
+        String query = "{ ? = call iniciar_sesion(?, ?) }";
+
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement cs = connection.prepareCall(query)) {
+
+            cs.registerOutParameter(1, Types.BOOLEAN);
+            cs.setString(2, email);
+            cs.setString(3, contrasenya);
+
+            cs.execute();
+            resultado = cs.getInt(1) == 1; // 1 es verdadero, 0 es falso
+        }
+        return resultado;
     }
 }
