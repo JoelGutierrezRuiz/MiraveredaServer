@@ -162,4 +162,20 @@ public class UsuarioRepository {
             return false; // Manejo de excepción, retorna false en caso de error
         }
     }
+    public boolean iniciarSesion(String email, String contrasenya) throws SQLException {
+        boolean resultado = false;
+        String query = "{ ? = call iniciar_sesion(?, ?) }";
+
+        try (Connection connection = dataSource.getConnection();
+             CallableStatement cs = connection.prepareCall(query)) {
+
+            cs.registerOutParameter(1, Types.BOOLEAN);
+            cs.setString(2, email);
+            cs.setString(3, contrasenya);
+
+            cs.execute();
+            resultado = cs.getInt(1) == 1; // 1 es verdadero, 0 es falso
+        }
+        return resultado;
+    }
 }

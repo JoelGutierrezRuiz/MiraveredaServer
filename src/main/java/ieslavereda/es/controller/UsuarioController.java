@@ -59,6 +59,17 @@ public class UsuarioController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/usuarios/iniciarSesion/&email={email}&contrasenya={contrasenya}")
+    public ResponseEntity<?> iniciarSesion(@PathVariable("email") String email,@PathVariable("contrasenya") String contrasenya){
+        try {
+            boolean prueba = usuarioService.iniciarSesion(email,contrasenya);
+            if (!prueba)
+                return new ResponseEntity<>(prueba, HttpStatus.FOUND);
+            return new ResponseEntity<>(prueba,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PutMapping("/usuarios")
     public ResponseEntity<?> updateUsuario(@RequestBody UsuarioConcreto usuario){
         try{
@@ -83,7 +94,4 @@ public class UsuarioController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 }

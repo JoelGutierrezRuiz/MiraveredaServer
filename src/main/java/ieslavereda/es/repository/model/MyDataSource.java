@@ -10,19 +10,11 @@ import java.sql.SQLException;
 
 @Configuration
 public class MyDataSource {
-    @Bean(name="mysqlDataSource")
-    public static DataSource getMySQLDataSource() {
-        MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost:3306/javaAccess");
-        dataSource.setUser("xrosillo");
-        dataSource.setPassword("1111");
-        return dataSource;
-    }
 
     @Bean(name="oracleDataSource")
     public static DataSource getMyOracleDataSource() throws SQLException {
         OracleDataSource dataSource = new OracleDataSource();
-        dataSource.setURL("jdbc:oracle:thin:@192.168.1.227:1539:xe"); //ip de la maquina Virtual
+        dataSource.setURL("jdbc:oracle:thin:@172.30.134.233:1539:xe"); //ip de la maquina Virtual
         dataSource.setUser("C##Aray"); //Poner de user sys as sysdba
         dataSource.setPassword("1234"); //misma
         return dataSource;

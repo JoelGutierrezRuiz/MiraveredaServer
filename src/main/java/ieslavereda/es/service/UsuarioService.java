@@ -35,4 +35,7 @@ public class UsuarioService {
     public boolean updateUsuario(UsuarioConcreto usuario) throws SQLException{
         return usuarioRepository.updateUsuario(usuario);
     }
+    public boolean iniciarSesion(String email, String contrasenya) throws SQLException{
+        return usuarioRepository.iniciarSesion(email,contrasenya);
+    }
 }

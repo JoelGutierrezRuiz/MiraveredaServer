@@ -22,7 +22,7 @@ import java.util.List;
 public class ClienteRepository {
 
     @Autowired
-    @Qualifier("mysqlDataSource")
+    @Qualifier("oracleDataSource")
     DataSource dataSource;
     private List<Cliente> clientes;
 
