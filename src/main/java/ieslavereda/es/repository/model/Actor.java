@@ -2,6 +2,8 @@ package ieslavereda.es.repository.model;
 
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Getter
@@ -9,7 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Actor {
+public class Actor implements Serializable {
     private int id;
     private String nombre;
     private String personaje;

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.Response;
 import ieslavereda.es.Api.ConectionApi;
+import ieslavereda.es.controller.DirectorController;
 import ieslavereda.es.repository.model.Contenido;
 import ieslavereda.es.repository.model.Data;
 import ieslavereda.es.repository.model.MyDataSource;
@@ -56,7 +57,7 @@ public class ContenidoRepository {
 
         List<Contenido> contenidos = new ArrayList<>();
         DataSource ds = MyDataSource.getMyOracleDataSource();
-        String query = "SELECT * from contenido";
+        String query = "SELECT * from contenido FETCH FIRST 20 ROWS ONLY";
 
         try(Connection con = ds.getConnection();
             PreparedStatement prep = con.prepareStatement(query)){
@@ -157,33 +158,35 @@ public class ContenidoRepository {
 
 
 
-    List<Pelicula> peliculas;
+
+    List<Contenido> contenidos;
     public  ContenidoRepository(){
-        peliculas = new ArrayList<>();
+        contenidos = new ArrayList<>();
     }
-    public List<Pelicula> insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
-        int totalPaginas = 1;
+
+
+    public List<Contenido> insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
+        int totalPaginas = 10;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
             Response response = connection.response();
             if(response.isSuccessful()) {
                 String respuestaString = response.body().string();
                 JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+                int id;
                 for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
-                    int id = peli.getAsJsonObject().get("id").getAsInt();
-                    peliculas.add(getPeliculaById(id));
+                    id = peli.getAsJsonObject().get("id").getAsInt();
+                    Contenido contenido = getPeliculaById(id);
+                    contenidos.add(contenido);
                 }
             }
-            response.body().close();
         }
-        System.out.println("salimos");
         insertarTodos();
-        return peliculas;
+        return contenidos;
     }
     public void insertarTodos() throws SQLException {
-        for(Contenido contenido : peliculas){
+        for(Contenido contenido : contenidos){
             insertarContenido(contenido);
-            System.out.println(contenido.getTitulo());
         }
     }
     public Pelicula getPeliculaById(int idPelicula){
@@ -208,8 +211,8 @@ public class ContenidoRepository {
 
                 float rating = jsonObject.get("vote_average").getAsFloat();
                 int idDirector = getIdDirector(jsonObject.get("credits").getAsJsonObject().get("crew").getAsJsonArray());
+                System.out.println(idDirector);
                 int duration = jsonObject.get("runtime").getAsInt();
-                response.body().close();
                 return new Pelicula(idPelicula,11,idDirector, genre, 1, fecha, rating, overview, duration, "Película", null, title, img);
             }
         }catch (Exception e){
@@ -218,37 +221,40 @@ public class ContenidoRepository {
         throw new RuntimeException("No se ha encontrado la película");
     }
     public Integer getIdDirector(JsonArray casting){
+        String department;
+        Integer id;
         for (JsonElement element : casting){
-            String department = element.getAsJsonObject().get("known_for_department").getAsString();
-            if(department.equals("Directing")){
-                System.out.println(element.getAsJsonObject().get("id").getAsInt());
-                return element.getAsJsonObject().get("id").getAsInt();
+            department = element.getAsJsonObject().get("known_for_department").getAsString().toLowerCase();
+            id = element.getAsJsonObject().get("id").getAsInt();
+            if(department.equals("directing")){
+                return id;
             }
         }
-        return -1;
+
+        return 0;
     }
     public void insertarContenido(Contenido contenido) throws SQLException {
         DataSource ds = MyDataSource.getMyOracleDataSource();
         //id,genero,imagen,idTarifa,idDirector,titulo,precio,valoracion,descripcion,duracion,fechaEstreno,current_timestamp,tipo
-        String query = "{call ?:=insertarContenido(?,?,?,?,?,?,?,?,?,?,?)}";
+        String query = "{call ?:=insertarContenido(?,?,?,?,?,?,?,?,?,?,?,?)}";
         try(Connection con = ds.getConnection()){
             CallableStatement cs = con.prepareCall(query);
-            cs.registerOutParameter(1, OracleTypes.BOOLEAN);
-            cs.setString(2,contenido.getGenero());
-            cs.setString(3,contenido.getTipo());
-            cs.setString(4,contenido.getImg());
-            cs.setInt(5,1);
-            cs.setInt(6,contenido.getIdDirector());
-            cs.setString(7,contenido.getTitulo());
-            cs.setInt(8,11);
-            cs.setFloat(9,contenido.getValoMedia());
-            cs.setString(10,contenido.getDesc());
-            cs.setInt(11,contenido.getDuracion());
-            cs.setDate(12, (java.sql.Date) contenido.getFecha());
+            cs.registerOutParameter(1, OracleTypes.VARCHAR);
+            cs.setInt(2,contenido.getId());
+            cs.setString(3,contenido.getGenero());
+            cs.setString(4,contenido.getTipo());
+            cs.setString(5,contenido.getImg());
+            cs.setInt(6,1);
+            cs.setInt(7,contenido.getIdDirector());
+            cs.setString(8,contenido.getTitulo());
+            cs.setInt(9,11);
+            cs.setFloat(10,contenido.getValoMedia());
+            cs.setString(11,contenido.getDesc());
+            cs.setInt(12,contenido.getDuracion());
+            cs.setDate(13, (java.sql.Date) contenido.getFecha());
 
             cs.execute();
-
-            System.out.println(cs.getBoolean(1));
+           // System.out.println(cs.getString(1));
         }
     }
 

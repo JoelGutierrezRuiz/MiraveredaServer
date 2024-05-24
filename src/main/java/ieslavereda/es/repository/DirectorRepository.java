@@ -34,19 +34,21 @@ public class DirectorRepository {
     }
 
     public List<Director> insertarDirectores() throws IOException, ParseException, SQLException {
-        int totalPaginas = 1;
+        int totalPaginas = 10;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
             Response response = connection.response();
             if(response.isSuccessful()) {
                 String respuestaString = response.body().string();
                 JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+                int idPeli;
+                Director director;
                 for (JsonElement peli : jsonObject.get("results").getAsJsonArray()) {
-                    int id = peli.getAsJsonObject().get("id").getAsInt();
-                    directores.add(getIdDirector(id));
+                    idPeli = peli.getAsJsonObject().get("id").getAsInt();
+                    director = getIdDirector(idPeli);
+                    directores.add(director);
                 }
             }
-            response.body().close();
         }
         insertarTodos();
         return directores;
@@ -60,19 +62,22 @@ public class DirectorRepository {
         }
     }
     public Director getIdDirector(int idPelicula){
-
         try {
             ConectionApi connection = new ConectionApi(("https://api.themoviedb.org/3/movie/"+idPelicula+"?append_to_response=credits&language=es"));
             Response response = connection.response();
+            int idDirector;
+            String nombre;
+            Director director;
             if(response.isSuccessful()) {
                 String respuestaString = response.body().string();
                 JsonObject jsonObject = JsonParser.parseString(respuestaString).getAsJsonObject();
+                String department;
                 for (JsonElement element : jsonObject.get("credits").getAsJsonObject().get("crew").getAsJsonArray()){
-                    String department = element.getAsJsonObject().get("known_for_department").getAsString();
-                    if(department.equals("Directing")){
-                        int idDirector =  element.getAsJsonObject().get("id").getAsInt();
-                        String nombre = element.getAsJsonObject().get("name").getAsString();
-                        Director director = new Director(idDirector,nombre);
+                    department = element.getAsJsonObject().get("known_for_department").getAsString().toLowerCase();
+                    if(department.equals("directing")){
+                        idDirector =  element.getAsJsonObject().get("id").getAsInt();
+                        nombre = element.getAsJsonObject().get("name").getAsString();
+                        director = new Director(idDirector,nombre);
                         return director;
                     }
                 }
