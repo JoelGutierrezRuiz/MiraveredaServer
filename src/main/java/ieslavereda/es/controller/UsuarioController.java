@@ -1,5 +1,6 @@
 package ieslavereda.es.controller;
 
+import ieslavereda.es.repository.model.LoginRequest;
 import ieslavereda.es.repository.model.Pelicula;
 import ieslavereda.es.repository.model.Usuario;
 import ieslavereda.es.repository.model.UsuarioConcreto;
@@ -59,10 +60,10 @@ public class UsuarioController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/usuarios/iniciarSesion/&email={email}&contrasenya={contrasenya}")
-    public ResponseEntity<?> iniciarSesion(@PathVariable("email") String email,@PathVariable("contrasenya") String contrasenya){
+    @PostMapping("/usuarios/iniciarSesion")
+    public ResponseEntity<?> iniciarSesion(@RequestBody LoginRequest loginRequest){
         try {
-            boolean prueba = usuarioService.iniciarSesion(email,contrasenya);
+            boolean prueba = usuarioService.iniciarSesion(loginRequest);
             if (!prueba)
                 return new ResponseEntity<>(prueba, HttpStatus.FOUND);
             return new ResponseEntity<>(prueba,HttpStatus.OK);

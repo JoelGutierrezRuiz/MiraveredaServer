@@ -2,6 +2,7 @@ package ieslavereda.es.service;
 
 import ieslavereda.es.repository.PeliculaRepository;
 import ieslavereda.es.repository.UsuarioRepository;
+import ieslavereda.es.repository.model.LoginRequest;
 import ieslavereda.es.repository.model.Pelicula;
 import ieslavereda.es.repository.model.Usuario;
 import ieslavereda.es.repository.model.UsuarioConcreto;
@@ -35,7 +36,7 @@ public class UsuarioService {
     public boolean updateUsuario(UsuarioConcreto usuario) throws SQLException{
         return usuarioRepository.updateUsuario(usuario);
     }
-    public boolean iniciarSesion(String email, String contrasenya) throws SQLException{
-        return usuarioRepository.iniciarSesion(email,contrasenya);
+    public boolean iniciarSesion(LoginRequest loginRequest) throws SQLException{
+        return usuarioRepository.iniciarSesion(loginRequest);
     }
 }

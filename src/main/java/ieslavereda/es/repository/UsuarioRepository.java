@@ -1,5 +1,6 @@
 package ieslavereda.es.repository;
 
+import ieslavereda.es.repository.model.LoginRequest;
 import ieslavereda.es.repository.model.Usuario;
 import ieslavereda.es.repository.model.UsuarioConcreto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,7 +163,7 @@ public class UsuarioRepository {
             return false; // Manejo de excepción, retorna false en caso de error
         }
     }
-    public boolean iniciarSesion(String email, String contrasenya) throws SQLException {
+    public boolean iniciarSesion(LoginRequest loginRequest) throws SQLException {
         boolean resultado = false;
         String query = "{ ? = call iniciar_sesion(?, ?) }";
 
@@ -170,8 +171,8 @@ public class UsuarioRepository {
              CallableStatement cs = connection.prepareCall(query)) {
 
             cs.registerOutParameter(1, Types.BOOLEAN);
-            cs.setString(2, email);
-            cs.setString(3, contrasenya);
+            cs.setString(2, loginRequest.getEmail());
+            cs.setString(3, loginRequest.getContrasenya());
 
             cs.execute();
             resultado = cs.getInt(1) == 1; // 1 es verdadero, 0 es falso
