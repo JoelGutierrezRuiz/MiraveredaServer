@@ -1,9 +1,6 @@
 package ieslavereda.es.controller;
 
-import ieslavereda.es.repository.model.LoginRequest;
-import ieslavereda.es.repository.model.Pelicula;
-import ieslavereda.es.repository.model.Usuario;
-import ieslavereda.es.repository.model.UsuarioConcreto;
+import ieslavereda.es.repository.model.*;
 import ieslavereda.es.service.DirectorService;
 import ieslavereda.es.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -63,9 +61,11 @@ public class UsuarioController {
     @PostMapping("/usuarios/iniciarSesion")
     public ResponseEntity<?> iniciarSesion(@RequestBody LoginRequest loginRequest){
         try {
-            boolean prueba = usuarioService.iniciarSesion(loginRequest);
+            Boolean prueba = usuarioService.iniciarSesion(loginRequest);
+            ArrayList<Boolean> sender = new ArrayList<>();
+            sender.add(prueba);
             if (!prueba)
-                return new ResponseEntity<>(prueba, HttpStatus.FOUND);
+                return new ResponseEntity<>(new Data(sender), HttpStatus.FOUND);
             return new ResponseEntity<>(prueba,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

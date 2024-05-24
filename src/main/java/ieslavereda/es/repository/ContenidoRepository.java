@@ -166,7 +166,7 @@ public class ContenidoRepository {
 
 
     public List<Contenido> insertarTodosLosContenidos() throws IOException, ParseException, SQLException {
-        int totalPaginas = 10;
+        int totalPaginas = 20;
         for(int i=0; i<=totalPaginas;i++){
             ConectionApi connection = new ConectionApi("https://api.themoviedb.org/3/movie/top_rated?language=es&page="+i);
             Response response = connection.response();
